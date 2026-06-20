@@ -1,0 +1,23 @@
+name: LINE Morning Notification
+
+on:
+  schedule:
+    - cron: '0 21 * * *'   # 毎日 21:00 UTC = 翌 06:00 JST
+  workflow_dispatch:        # スマホ・ブラウザから手動実行可能
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Send LINE notification
+        run: python line-notify.py --type auto
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID:              ${{ secrets.LINE_USER_ID }}
